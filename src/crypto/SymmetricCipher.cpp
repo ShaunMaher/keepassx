@@ -21,12 +21,16 @@
 #include "crypto/SymmetricCipherGcrypt.h"
 #include "crypto/SymmetricCipherSalsa20.h"
 
+SymmetricCipher::SymmetricCipher()
+    : m_backend(0)
+{
+}
+
 SymmetricCipher::SymmetricCipher(SymmetricCipher::Algorithm algo, SymmetricCipher::Mode mode,
                                  SymmetricCipher::Direction direction, const QByteArray& key, const QByteArray& iv)
-    : m_backend(createBackend(algo, mode, direction))
+    : m_backend(0)
 {
-    m_backend->setKey(key);
-    m_backend->setIv(iv);
+    init(algo, mode, direction, key, iv);
 }
 
 SymmetricCipher::~SymmetricCipher()

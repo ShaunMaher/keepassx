@@ -20,6 +20,7 @@
 
 #include <QCloseEvent>
 #include <QShortcut>
+#include <QtGui/QLineEdit>
 
 #include "autotype/AutoType.h"
 #include "core/Config.h"

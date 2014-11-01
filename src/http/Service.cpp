@@ -364,13 +364,42 @@ QList<KeepassHttpProtocol::Entry> Service::findMatchingEntries(const QString& /*
                 config.save(entry);
             }
         }
-        if (res == QDialog::Accepted) {
-            Q_FOREACH (Entry * entry, pwEntriesToConfirm)
-                result << prepareEntry(entry);
-        }
+        if (res == QDialog::Accepted)
+            pwEntries.append(pwEntriesToConfirm);
     }
 
-    //TODO: sort [--> need a flag], or do this in Server class [--> need an extra 'sort order' key in Entry, and we always compute it]
+    //Sort results
+    const bool sortSelection = true;
+    if (sortSelection) {
+        QUrl url(submitUrl);
+        if (url.scheme().isEmpty())
+            url.setScheme("http");
+        const QString submitUrl = url.toString(QUrl::StripTrailingSlash);
+        const QString baseSubmitURL = url.toString(QUrl::StripTrailingSlash | QUrl::RemovePath | QUrl::RemoveQuery | QUrl::RemoveFragment);
+
+        //Cache priorities
+        QHash<const Entry *, int> priorities;
+        priorities.reserve(pwEntries.size());
+        Q_FOREACH (const Entry * entry, pwEntries)
+            priorities.insert(entry, sortPriority(entry, host, submitUrl, baseSubmitURL));
+
+        //Sort by priorities
+        qSort(pwEntries.begin(), pwEntries.end(), SortEntries(priorities, HttpSettings::sortByTitle() ? "Title" : "UserName"));
+    }
+
+    //if (pwEntries.count() > 0)
+    //{
+    //    var names = (from e in resp.Entries select e.Name).Distinct<string>();
+    //    var n = String.Join("\n    ", names.ToArray<string>());
+    //    if (HttpSettings::receiveCredentialNotification())
+    //        ShowNotification(QString("%0: %1 is receiving credentials for:\n%2").arg(Id).arg(host).arg(n)));
+    //}
+
+    //Fill the list
+    QList<KeepassHttpProtocol::Entry> result;
+    result.reserve(pwEntries.count());
+    Q_FOREACH (Entry * entry, pwEntries)
+        result << prepareEntry(entry);
     return result;
 }
 
