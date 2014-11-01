@@ -29,6 +29,40 @@
 #include "gui/AboutDialog.h"
 #include "gui/DatabaseWidget.h"
 
+#include "http/Service.h"
+#include "http/HttpSettings.h"
+#include "http/OptionDialog.h"
+#include "gui/SettingsWidget.h"
+
+class HttpPlugin: public ISettingsPage {
+public:
+    HttpPlugin(DatabaseTabWidget * tabWidget): m_service(new Service(tabWidget)) {
+    }
+    virtual ~HttpPlugin() {
+    }
+    virtual QString name() {
+        return QObject::tr("Http");
+    }
+    virtual QWidget * createWidget() {
+        OptionDialog * dlg = new OptionDialog();
+        QObject::connect(dlg, SIGNAL(removeSharedEncryptionKeys()), m_service.data(), SLOT(removeSharedEncryptionKeys()));
+        QObject::connect(dlg, SIGNAL(removeStoredPermissions()), m_service.data(), SLOT(removeStoredPermissions()));
+        return dlg;
+    }
+    virtual void loadSettings(QWidget * widget) {
+        qobject_cast<OptionDialog*>(widget)->loadSettings();
+    }
+    virtual void saveSettings(QWidget * widget) {
+        qobject_cast<OptionDialog*>(widget)->saveSettings();
+        if (HttpSettings::isEnabled())
+            m_service->start();
+        else
+            m_service->stop();
+    }
+private:
+    QScopedPointer<Service> m_service;
+};
+
 const QString MainWindow::BaseWindowTitle = "KeePassX";
 
 MainWindow::MainWindow()
@@ -39,6 +73,8 @@ MainWindow::MainWindow()
     m_countDefaultAttributes = m_ui->menuEntryCopyAttribute->actions().size();
 
     restoreGeometry(config()->get("GUI/MainWindowGeometry").toByteArray());
+
+    m_ui->settingsWidget->addSettingsPage(new HttpPlugin(m_ui->tabWidget));
 
     setWindowIcon(filePath()->applicationIcon());
     QAction* toggleViewAction = m_ui->toolBar->toggleViewAction();

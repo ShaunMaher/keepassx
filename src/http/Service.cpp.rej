@@ -1,0 +1,17 @@
+--- src/http/Service.cpp
++++ src/http/Service.cpp
+@@ -370,6 +389,14 @@
+         qSort(pwEntries.begin(), pwEntries.end(), SortEntries(priorities, HttpSettings::sortByTitle() ? "Title" : "UserName"));
+     }
+ 
++    //if (pwEntries.count() > 0)
++    //{
++    //    var names = (from e in resp.Entries select e.Name).Distinct<string>();
++    //    var n = String.Join("\n    ", names.ToArray<string>());
++    //    if (HttpSettings::receiveCredentialNotification())
++    //        ShowNotification(QString("%0: %1 is receiving credentials for:\n%2").arg(Id).arg(host).arg(n)));
++    //}
++
+     //Fill the list
+     QList<KeepassHttpProtocol::Entry> result;
+     result.reserve(pwEntries.count());
