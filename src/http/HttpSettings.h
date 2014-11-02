@@ -59,6 +59,12 @@ public:
     static void setPasswordLength(int length);
     static PasswordGenerator::CharClasses passwordCharClasses();
     static PasswordGenerator::GeneratorFlags passwordGeneratorFlags();
+    static QString generatePassword();
+    static int getbits();
+};
+
+private:
+    static PasswordGenerator m_generator;
 };
 
 #endif // HTTPSETTINGS_H

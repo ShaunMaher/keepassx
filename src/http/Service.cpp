@@ -23,6 +23,7 @@
 #include "HttpSettings.h"
 
 #include "core/Database.h"
+#include "core/EntrySearcher.h"
 #include "core/Entry.h"
 #include "core/Group.h"
 #include "core/Metadata.h"
@@ -185,7 +186,7 @@ QList<Entry*> Service::searchEntries(Database* db, const QString& hostname)
 {
     QList<Entry*> entries;
     if (Group* rootGroup = db->rootGroup())
-        Q_FOREACH (Entry* entry, rootGroup->search(hostname, Qt::CaseInsensitive)) {
+        Q_FOREACH (Entry* entry, EntrySearcher().search(hostname, rootGroup, Qt::CaseInsensitive)) {
             QString title = entry->title();
             QString url = entry->url();
 
@@ -403,7 +404,7 @@ QList<KeepassHttpProtocol::Entry> Service::findMatchingEntries(const QString& /*
     return result;
 }
 
-int Service::countMatchingEntries(const QString &id, const QString &url, const QString &submitUrl, const QString &realm)
+int Service::countMatchingEntries(const QString &, const QString &url, const QString &submitUrl, const QString &realm)
 {
     return searchEntries(url).count();
 }
@@ -489,10 +490,11 @@ void Service::updateEntry(const QString &id, const QString &uuid, const QString 
 
 QString Service::generatePassword()
 {
-    PasswordGenerator * pwGenerator = passwordGenerator();
-    return pwGenerator->generatePassword(HttpSettings::passwordLength(),
-                                         HttpSettings::passwordCharClasses(),
-                                         HttpSettings::passwordGeneratorFlags());
+//    PasswordGenerator * pwGenerator = passwordGenerator();
+//    return pwGenerator->generatePassword(HttpSettings::passwordLength(),
+//                                         HttpSettings::passwordCharClasses(),
+//                                         HttpSettings::passwordGeneratorFlags());
+    return searchEntries(url).count();
 }
 
 void Service::removeSharedEncryptionKeys()

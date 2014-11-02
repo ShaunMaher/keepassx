@@ -14,6 +14,8 @@
 #include "HttpSettings.h"
 #include "core/Config.h"
 
+PasswordGenerator HttpSettings::m_generator;
+
 bool HttpSettings::isEnabled()
 {
     return config()->get("Http/Enabled", true).toBool();
@@ -216,4 +218,22 @@ PasswordGenerator::GeneratorFlags HttpSettings::passwordGeneratorFlags()
     if (passwordEveryGroup())
         flags |= PasswordGenerator::CharFromEveryGroup;
     return flags;
+}
+
+QString HttpSettings::generatePassword()
+{
+    m_generator.setLength(passwordLength());
+    m_generator.setCharClasses(passwordCharClasses());
+    m_generator.setFlags(passwordGeneratorFlags());
+
+    return m_generator.generatePassword();
+}
+
+int HttpSettings::getbits()
+{
+    //TODO: This was implemented upstream by adding a fundtion to 
+    // core/PasswordGenerator.cpp which I'd rather not do at this juncture.
+    // Instead we just return zero.
+    return 1;
+    //return m_generator.getbits();
 }

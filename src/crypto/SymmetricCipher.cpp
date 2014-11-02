@@ -64,7 +64,6 @@ void SymmetricCipher::init(SymmetricCipher::Algorithm algo, SymmetricCipher::Mod
 {
     Q_ASSERT(!m_backend);
     m_backend.reset(createBackend(algo, mode, direction));
-    m_backend->init();
     m_backend->setKey(key);
     if (!iv.isNull())
         m_backend->setIv(iv);
