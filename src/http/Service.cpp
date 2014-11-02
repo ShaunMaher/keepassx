@@ -494,7 +494,8 @@ QString Service::generatePassword()
 //    return pwGenerator->generatePassword(HttpSettings::passwordLength(),
 //                                         HttpSettings::passwordCharClasses(),
 //                                         HttpSettings::passwordGeneratorFlags());
-    return searchEntries(url).count();
+//    return searchEntries(url).count();
+    return HttpSettings::generatePassword();
 }
 
 void Service::removeSharedEncryptionKeys()

@@ -287,7 +287,7 @@ void Response::setVerifier(QString key)
     m_cipher.init(SymmetricCipher::Aes256, SymmetricCipher::Cbc, SymmetricCipher::Encrypt, decode64(key));
 
     //Generate new IV
-    const QByteArray iv = Random::randomArray(m_cipher.blockSize());
+    const QByteArray iv = randomGen()->randomArray(m_cipher.blockSize());
     m_cipher.setIv(iv);
     m_nonce = encode64(iv);
 

@@ -61,7 +61,6 @@ public:
     static PasswordGenerator::GeneratorFlags passwordGeneratorFlags();
     static QString generatePassword();
     static int getbits();
-};
 
 private:
     static PasswordGenerator m_generator;
